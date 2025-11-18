@@ -1,34 +1,36 @@
-Project 1: Predictive CI/CD Pipeline Optimizer
+# **Predictive CI/CD Pipeline Optimizer**
 
 This project is a complete simulation of an AIOps system designed to predict CI build failures before running a time-consuming test suite.
 
 It uses a machine learning model (trained on historical build data) to make a real-time prediction on a new commit.
 
-Project Components
+# Project Components:
 
-generate_data.py: A script to create a fake build_history.csv. This simulates your historical build log with realistic patterns (e.g., large commits are riskier).
+`gui_app.py`: (NEW) A graphical interface to interactively test predictions with a visual dashboard.
 
-train_model.py: Reads build_history.csv, trains a RandomForestClassifier to predict build_status, and saves the final ci_model.pkl and model_features.json.
+`generate_data.py`: A script to create a fake build_history.csv. This simulates your historical build log with realistic patterns (e.g., large commits are riskier).
 
-run_ci_pipeline.py: A script that simulates a real CI run. It takes commit info (like author, files changed) as arguments, loads the model, and makes a prediction.
+`train_model.py`: Reads build_history.csv, trains a RandomForestClassifier to predict build_status, and saves the final ci_model.pkl and model_features.json.
 
-visualize_analysis.py: A standalone script that loads the model and data to generate diagnostic charts (Confusion Matrix, Feature Importance, etc.) into an images/ folder.
+`run_ci_pipeline.py`: A script that simulates a real CI run. It takes commit info (like author, files changed) as arguments, loads the model, and makes a prediction.
+
+`visualize_analysis.py`: A standalone script that loads the model and data to generate diagnostic charts (Confusion Matrix, Feature Importance, etc.) into an images/ folder.
 
 requirements.txt: Python dependencies.
 
-How to Run This Demo
+# How to Run This Demo
 
-Set up your environment:
+# Set up your environment:
 
 # Create a virtual environment (recommended)
-python -m venv venv
+'python -m venv venv
 source venv/bin/activate 
 
 # Install dependencies
 pip install -r requirements.txt
 
 
-Step 1: Generate Historical Data
+# Step 1: Generate Historical Data
 Run the data generator. This only needs to be done once.
 
 python generate_data.py
@@ -36,7 +38,7 @@ python generate_data.py
 
 You will see output as it creates build_history.csv.
 
-Step 2: Train the AI Model
+# Step 2: Train the AI Model
 Run the training script. This will read the CSV and create two new files: ci_model.pkl and model_features.json.
 
 python train_model.py
@@ -44,7 +46,7 @@ python train_model.py
 
 You will see the model's accuracy and a classification report.
 
-Step 3: Visualize the Model Logic (Optional)
+# Step 3: Visualize the Model Logic (Optional)
 Run the analysis script to generate charts explaining how the model works.
 
 python visualize_analysis.py
@@ -52,30 +54,20 @@ python visualize_analysis.py
 
 This will create an images/ folder containing PNG charts for Feature Importance, Confusion Matrix, and Failure Trends.
 
-Step 4: Run the "Smart" Pipeline
-Now you can simulate new commits.
+# Step 4: Run the Prediction Dashboard (GUI)
+Launch the graphical interface to test the model interactively.
 
-Test a "safe" commit:
-This commit (from a main_dev, with few changes) should be predicted to PASS.
+python gui_app.py
 
-python run_ci_pipeline.py --author "main_dev" --files-changed 3 --lines-added 20 --lines-deleted 5 --dominant-file-type ".py"
+**Scenario A (Safe)**: Select "main_dev", ".py", and low changes. Click "Analyze". The result should be GREEN.
 
+**Scenario B (Risky)**: Select "new_dev", ".yml", and high changes. Click "Analyze". The result should be RED.
 
-Output: The script will predict SUCCESS and run the 10-second "long test suite".
-
-Test a "risky" commit:
-This commit (from a new_dev, with many files changed in a .yml) is designed to be predicted as a FAILURE.
-
-python run_ci_pipeline.py  --author "new_dev" --files-changed 18 --lines-added 150 --lines-deleted 40 --dominant-file-type ".yml"
-
-
-Output: The script will predict FAILURE and "fail fast," saving 10 seconds of compute time.
-
-How to Integrate This into a REAL System (e.g., GitHub Actions)
+**How to Integrate This into a REAL System (e.g., GitHub Actions)**
 
 This simulation shows the core logic. Here is the architectural plan to implement this for real.
 
-Phase 1: Data Collection (Run Asynchronously)
+# Phase 1: Data Collection (Run Asynchronously)
 
 You need to start logging your build history to a central database.
 
@@ -89,7 +81,7 @@ Gather metadata: git log -1 --pretty=format:'%an', git diff --shortstat, build s
 
 Run a Python script to send this data to your database.
 
-Phase 2: Model Training (Run on a Schedule)
+# Phase 2: Model Training (Run on a Schedule)
 
 The model should be re-trained periodically to learn from new data.
 
@@ -103,7 +95,7 @@ Modify the script to read from your database, not a CSV.
 
 Instead of saving the model locally, it should save ci_model.pkl and model_features.json to a central artifact store (like an S3 bucket or GitHub Packages).
 
-Phase 3: Prediction/Inference (Run in Real-Time)
+# Phase 3: Prediction/Inference (Run in Real-Time)
 
 This is where you modify your main CI pipeline to use the model.
 
@@ -117,7 +109,7 @@ Gather the metadata for the current commit (author, files changed, etc.).
 
 Run run_ci_pipeline.py with this metadata.
 
-The "Smart" Logic:
+# The "Smart" Logic:
 
 The run_ci_pipeline.py script will exit with 0 (success) or 1 (failure).
 
