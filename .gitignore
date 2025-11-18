@@ -1,0 +1,31 @@
+# --- Python Standard ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- Virtual Environments ---
+venv/
+env/
+.venv/
+.env
+
+# --- Operating System Files ---
+.DS_Store
+Thumbs.db
+
+# --- IDE Settings ---
+.vscode/
+.idea/
+
+# --- Project Specific (Big Files) ---
+# Ignore the generated data
+*.csv
+build_history.csv
+
+# Ignore the heavy AI models
+*.pkl
+*.joblib
+ci_model.pkl
+
+# Ignore generated feature lists (optional, but good for clean repos)
+model_features.json

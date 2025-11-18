@@ -5,7 +5,7 @@ import random
 print("--- Running Data Generator ---")
 
 # --- Configuration ---
-NUM_ROWS = 100000
+NUM_ROWS = 10
 AUTHORS = ['main_dev', 'main_dev', 'main_dev', 'new_dev', 'contractor']
 FILE_TYPES = ['.py', '.js', '.md', '.yml', '.css']
 
