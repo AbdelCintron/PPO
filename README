@@ -1,0 +1,5 @@
+Predictive CI/CD Pipeline Optimizer
+
+This project is a complete simulation of an AIOps system designed to predict CI build failures before running a time-consuming test suite.
+
+It uses a machine learning model (trained on historical build data) to make real time prediction on a new commit.
