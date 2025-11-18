@@ -48,30 +48,18 @@ Now you can simulate new commits.
 Test a "safe" commit:
 This commit (from a main_dev, with few changes) should be predicted to PASS.
 
-python run_ci_pipeline.py \
-  --author "main_dev" \
-  --files-changed 3 \
-  --lines-added 20 \
-  --lines-deleted 5 \
-  --dominant-file-type ".py"
-
+python run_ci_pipeline.py --author "main_dev" --files-changed 3 --lines-added 20 --lines-deleted 5 --dominant-file-type ".py"
 
 Output: The script will predict SUCCESS and run the 10-second "long test suite".
 
 Test a "risky" commit:
 This commit (from a new_dev, with many files changed in a .yml) is designed to be predicted as a FAILURE.
 
-python run_ci_pipeline.py \
-  --author "new_dev" \
-  --files-changed 18 \
-  --lines-added 150 \
-  --lines-deleted 40 \
-  --dominant-file-type ".yml"
-
+python run_ci_pipeline.py --author "new_dev" --files-changed 18 --lines-added 150 --lines-deleted 40 --dominant-file-type ".yml"
 
 Output: The script will predict FAILURE and "fail fast," saving 10 seconds of compute time.
 
-🌎 How to Integrate This into a REAL System (e.g., GitHub Actions)
+How to Integrate This into a REAL System (e.g., GitHub Actions)
 
 This simulation shows the core logic. Here is the architectural plan to implement this for real.
 
