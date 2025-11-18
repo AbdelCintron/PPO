@@ -3,7 +3,7 @@ import random
 import time
 
 #Main Configuration 
-NUM_ROWS = 500
+NUM_ROWS = 100
 AUTHORS = ['main_dev', 'main_dev', 'main_dev', 'new_dev', 'contractor']
 FILE_TYPES = ['.py', '.js', '.md', '.yml', '.css']
 
@@ -51,5 +51,5 @@ for _ in range(NUM_ROWS):
     df.to_csv('build_history.csv', index=False)
 
     print(f"Successfully generated 'build_history.csv' with {len(df)} rows.")
-    print("\n--- Data Head ---")
+    print("\n--- Data Head --- \n")
     print(df.head())

@@ -9,3 +9,120 @@ Project Components
 generate_data.py: A script to create a fake build_history.csv. This simulates your historical build log.
 
 train_model.py: Reads build_history.csv, trains a RandomForestClassifier to predict build_status, and saves the final ci_model.pkl and model_features.json.
+
+run_ci_pipeline.py: A script that simulates a real CI run. It takes commit info (like author, files changed) as arguments, loads the model, and makes a prediction.
+
+requirements.txt: Python dependencies.
+
+How to Run This Demo
+
+Set up your environment:
+
+# Create a virtual environment (recommended)
+python -m venv venv
+source venv/bin/activate 
+
+# Install dependencies
+pip install -r requirements.txt
+
+
+Step 1: Generate Historical Data
+Run the data generator. This only needs to be done once.
+
+python generate_data.py
+
+
+You will see output as it creates build_history.csv.
+
+Step 2: Train the AI Model
+Run the training script. This will read the CSV and create two new files: ci_model.pkl and model_features.json.
+
+python train_model.py
+
+
+You will see the model's accuracy and a classification report.
+
+Step 3: Run the "Smart" Pipeline
+Now you can simulate new commits.
+
+Test a "safe" commit:
+This commit (from a main_dev, with few changes) should be predicted to PASS.
+
+python run_ci_pipeline.py \
+  --author "main_dev" \
+  --files-changed 3 \
+  --lines-added 20 \
+  --lines-deleted 5 \
+  --dominant-file-type ".py"
+
+
+Output: The script will predict SUCCESS and run the 10-second "long test suite".
+
+Test a "risky" commit:
+This commit (from a new_dev, with many files changed in a .yml) is designed to be predicted as a FAILURE.
+
+python run_ci_pipeline.py \
+  --author "new_dev" \
+  --files-changed 18 \
+  --lines-added 150 \
+  --lines-deleted 40 \
+  --dominant-file-type ".yml"
+
+
+Output: The script will predict FAILURE and "fail fast," saving 10 seconds of compute time.
+
+🌎 How to Integrate This into a REAL System (e.g., GitHub Actions)
+
+This simulation shows the core logic. Here is the architectural plan to implement this for real.
+
+Phase 1: Data Collection (Run Asynchronously)
+
+You need to start logging your build history to a central database.
+
+Database: Create a database (e.g., PostgreSQL, AWS S3 bucket) to store build results.
+
+Modify CI Pipeline: At the end of your existing CI pipeline (after tests run), add a new step.
+
+This step should:
+
+Gather metadata: git log -1 --pretty=format:'%an', git diff --shortstat, build status (success/failure).
+
+Run a Python script to send this data to your database.
+
+Phase 2: Model Training (Run on a Schedule)
+
+The model should be re-trained periodically to learn from new data.
+
+Scheduled Job: Create a scheduled task (e.g., a nightly cron job or a schedule trigger in GitHub Actions).
+
+This job should:
+
+Run train_model.py.
+
+Modify the script to read from your database, not a CSV.
+
+Instead of saving the model locally, it should save ci_model.pkl and model_features.json to a central artifact store (like an S3 bucket or GitHub Packages).
+
+Phase 3: Prediction/Inference (Run in Real-Time)
+
+This is where you modify your main CI pipeline to use the model.
+
+New First Step: Add a new step at the very beginning of your CI pipeline, before your npm test or pytest command.
+
+This step should:
+
+Download the latest ci_model.pkl and model_features.json from your S3 bucket.
+
+Gather the metadata for the current commit (author, files changed, etc.).
+
+Run run_ci_pipeline.py with this metadata.
+
+The "Smart" Logic:
+
+The run_ci_pipeline.py script will exit with 0 (success) or 1 (failure).
+
+In your CI pipeline, check this exit code. If the exit code is 1 (predict failure), fail the entire pipeline immediately.
+
+If the exit code is 0 (predict success), allow the pipeline to continue to the "long test suite" step as normal.
+
+This architecture separates data collection, model training, and prediction, which is the core principle of a robust MLOps/AIOps system.
