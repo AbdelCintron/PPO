@@ -21,6 +21,7 @@ Thumbs.db
 # Ignore the generated data
 *.csv
 build_history.csv
+*.png
 
 # Ignore the heavy AI models
 *.pkl

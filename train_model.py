@@ -4,7 +4,6 @@ import json
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, accuracy_score
-# Removed LabelEncoder as we will use a safer manual map
 
 print("Starting model training script...")
 
