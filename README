@@ -1,5 +1,11 @@
-Predictive CI/CD Pipeline Optimizer
+Project 1: Predictive CI/CD Pipeline Optimizer
 
 This project is a complete simulation of an AIOps system designed to predict CI build failures before running a time-consuming test suite.
 
-It uses a machine learning model (trained on historical build data) to make real time prediction on a new commit.
+It uses a machine learning model (trained on historical build data) to make a real-time prediction on a new commit.
+
+Project Components
+
+generate_data.py: A script to create a fake build_history.csv. This simulates your historical build log.
+
+train_model.py: Reads build_history.csv, trains a RandomForestClassifier to predict build_status, and saves the final ci_model.pkl and model_features.json.
